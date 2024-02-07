@@ -1,50 +1,50 @@
 {
-  "name": "sonoya",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "start": "electron .",
-    "rebuild": "electron-rebuild -f -w sqlite3",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "electron-builder install-app-deps && npm run register-startup",
-    "register-startup": "node register-startup.js"
-  },
-  "build": {
-    "appId": "app.sonoya.gym.app",
-    "linux": {
-      "target": [
-        "deb"
-      ]
+    "name": "sonoya",
+    "version": "1.0.0",
+    "description": "Sonoya NFC Reader",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "electron .",
+        "rebuild": "electron-rebuild -f -w sqlite3",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "postinstall": "electron-builder install-app-deps && npm run register-startup",
+        "register-startup": "node register-startup.js"
     },
-    "mac": {
-      "category": "ERP",
-      "icon": "assets/logo.png"
+    "build": {
+        "appId": "app.sonoya.gym.app",
+        "linux": {
+            "target": [
+                "deb"
+            ]
+        },
+        "mac": {
+            "category": "ERP",
+            "icon": "assets/logo.png"
+        },
+        "win": {
+            "target": "nsis",
+            "icon": "assets/logo.png"
+        }
     },
-    "win": {
-      "target": "nsis",
-      "icon": "assets/logo.png"
+    "author": "Youssouf Donzo",
+    "license": "Sonoya PPL",
+    "devDependencies": {
+        "@electron/rebuild": "^3.6.0",
+        "electron": "^28.2.1",
+        "electron-builder": "^24.9.1",
+        "electron-fetch": "^1.9.1",
+        "electron-rebuild": "^3.2.9",
+        "electron-reload": "^2.0.0-alpha.1",
+        "electron-reloader": "^1.2.3"
+    },
+    "dependencies": {
+        "laravel-echo": "^1.15.3",
+        "nan": "^2.18.0",
+        "nfc-pcsc": "^0.8.1",
+        "node-fetch": "^3.3.2",
+        "pusher": "^5.2.0",
+        "pusher-js": "^8.4.0-rc2",
+        "sqlite3": "^5.1.7"
     }
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@electron/rebuild": "^3.6.0",
-    "electron": "^28.2.1",
-    "electron-builder": "^24.9.1",
-    "electron-fetch": "^1.9.1",
-    "electron-rebuild": "^3.2.9",
-    "electron-reload": "^2.0.0-alpha.1",
-    "electron-reloader": "^1.2.3"
-  },
-  "dependencies": {
-    "laravel-echo": "^1.15.3",
-    "nan": "^2.18.0",
-    "nfc-pcsc": "^0.8.1",
-    "node-fetch": "^3.3.2",
-    "pusher": "^5.2.0",
-    "pusher-js": "^8.4.0-rc2",
-    "sqlite3": "^5.1.7"
-  }
 }
