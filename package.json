@@ -27,7 +27,7 @@
             "icon": "assets/logo.png"
         }
     },
-    "author": "Youssouf Donzo",
+    "author": "Youssouf Donzo <donzoyoussouf@gmail.com>",
     "license": "Sonoya PPL",
     "devDependencies": {
         "@electron/rebuild": "^3.6.0",

@@ -138,11 +138,16 @@ async function makePostRequest(uuid, reader) {
 				if (exists) {
 					//await reader.led(0b00101110, [0x01, 0x00, 0x01, 0x01]);
 					console.log(`Un enregistrement valide existe avec le numéro de série ${uuid}.`);
-					await reader.led(0b00101110, [0x01, 0x00, 0x01, 0x01]);
-                    await reader.led(0b01011101, [0x02, 0x01, 0x05, 0x01]);
+					// reader.led(0b00101110, [0x01, 0x00, 0x01, 0x01]).then((data) => {
+
+                    // });
+                    //await reader.led(0b01011101, [0x02, 0x01, 0x05, 0x01]);
 				} else {
 					console.log(`Aucun enregistrement valide trouvé avec le numéro de série ${uuid}.`);
-					await reader.led(0b01011101, [0x02, 0x01, 0x05, 0x01]);
+					//await reader.led(0b01011101, [0x02, 0x01, 0x05, 0x01]);
+                    // reader.led(0b00101110, [0x01, 0x00, 0x01, 0x01]).then((data) => {
+                        
+                    // });
 				}
 			}
 		});
@@ -157,7 +162,17 @@ async function makePostRequest(uuid, reader) {
 }
 
 nfc.on('reader', async reader => {
-	
+
+    try {
+		await reader.connect(CONNECT_MODE_DIRECT);
+		await reader.setBuzzerOutput(false);
+		//await reader.disconnect();
+	} catch (err) {
+		console.log(err);
+	}
+
+    return;
+        
 	reader.on('card', async card => {
 
         const uuid = card.uid;
@@ -171,19 +186,19 @@ nfc.on('reader', async reader => {
 	});
 
 	reader.on('card.off', card => {
-		//console.log(`${reader.reader.name}  card removed`, card);
+		console.log(`${reader.reader.name}  card removed`, card);
 	});
 
 	reader.on('error', err => {
-		///console.log(`${reader.reader.name}  an error occurred`, err);
+		console.log(`${reader.reader.name}  an error occurred`, err);
 	});
 
 	reader.on('end', () => {
-		//console.log(`${reader.reader.name}  device removed`);
+		console.log(`${reader.reader.name}  device removed`);
 	});
 
 });
 
 nfc.on('error', err => {
-	//console.log('an error occurred', err);
+	console.log('an error occurred', err);
 });
