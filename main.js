@@ -7,11 +7,11 @@ import { app, BrowserWindow } from "electron";
 import path from "path";
 import os from "os";
 
-var LED_ROUGE = [0xFF, 0x00, 0x40, 0x50, 0x04, 0x05, 0x0A, 0x02, 0x00];
+var LED_ROUGE = [0xFF, 0x00, 0x40, 0x50, 0x04, 0x02, 0x0A, 0x02, 0x00];
 var BEEP_LONG = [0xFF, 0x00, 0x40, 0x00, 0x4C, 0x6, 0x00, 0x01, 0x01];
 var READ_UID = [0xFF, 0xCA, 0x00, 0x00, 0x00];
 
-var CURRENT_PROTO = null;
+var CURRENT_STATUS = false;
 
 var pcscs = pcsc();
 
@@ -20,30 +20,41 @@ const dbName = 'sonoya_db.db';
 
 pcscs.on('reader', function(reader) {
 
-
     reader.on('status', function(status) {
 
         const cardInserted = status.state & reader.SCARD_STATE_PRESENT;
 
         if (cardInserted) {
-            reader.connect({ share_mode: reader.SCARD_SHARE_SHARED }, (err, protocol) => {
-                CURRENT_PROTO = protocol;
+            
+            reader.connect({ share_mode: reader.SCARD_SHARE_EXCLUSIVE }, (err, protocol) => {
                 if (err) {
                     console.error('Erreur lors de la connexion au lecteur NFC:', err.message);
+                    CURRENT_STATUS = false;
                     return;
                 }
 
-                reader.transmit(Buffer.from(READ_UID), 10, protocol, async (err, data) => {
+                if(protocol == undefined) protocol = 2;
+
+                console.log("STATUS: "+CURRENT_STATUS);
+
+                if(CURRENT_STATUS == true) return;
+                console.log("SONA CAMARA");
+
+                CURRENT_STATUS = true;
+
+                reader.transmit(Buffer.from(READ_UID), 40, protocol, async (err, data) => {
                     if (err) {
                         console.error('Erreur lors de la lecture de l\'UID:', err.message);
+                        disConnetReader(reader);
+                        CURRENT_STATUS = false;
                     } else {
                         // L'UID est généralement les premiers 4 à 7 octets de la réponse
                         const uid = data.slice(0, -2).toString('hex');
-                        await makePostRequest(uid, reader, (status) => {
-                            
-                            if(status == false) {
-                                reader.transmit(Buffer.from(BEEP_LONG), 30, protocol, (err, data) => {
-                                    reader.transmit(Buffer.from(LED_ROUGE), 30, protocol, (err, data) => {
+                        await makePostRequest(uid, reader, async (status) => {
+
+                            if (status == false) {
+                                reader.transmit(Buffer.from(BEEP_LONG), 40, protocol, (err, data) => {
+                                    reader.transmit(Buffer.from(LED_ROUGE), 40, protocol, (err, data) => {
                                         disConnetReader(reader);
                                     });
                                 });
@@ -51,26 +62,25 @@ pcscs.on('reader', function(reader) {
                                 disConnetReader(reader);
                             }
 
+                            await sleep(50);
+
+                            CURRENT_STATUS = false;
+
                         });
                     }
                 });
-             
-                
             });
-            // Code pour contrôler la LED du lecteur NFC ici
-            // Vous devrez trouver la documentation spécifique à votre lecteur NFC pour connaître les commandes à envoyer pour contrôler la LED.
-        } else {
-            //console.log('Carte retirée');
-            // Code pour éteindre la LED du lecteur NFC ici, si nécessaire.
         }
-        /* check what has changed */
-        //var changes = this.state ^ status.state;
     });
 
     reader.on('end', function() {
         console.log('Reader',  this.name, 'removed');
     });
 });
+
+function sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
 
 pcscs.on('error', function(err) {
     console.log('PCSC error', err.message);
@@ -166,6 +176,7 @@ function checkRecordExists(serialNumber, callback) {
         } else {
             if (row) {
                 // Un enregistrement valide existe
+                console.log(row);
                 await callback(null, true);
             } else {
                 // Aucun enregistrement valide trouvé
@@ -211,7 +222,7 @@ async function makePostRequest(uuid, reader, callback) {
 }
 
 function disConnetReader(reader) {
-    reader.disconnect(reader.SCARD_LEAVE_CARD, err => {
+    reader.disconnect(reader.SCARD_UNPOWER_CARD, err => {
         if (err) {
             console.error('Erreur lors de la déconnexion du lecteur NFC:', err.message);
         } else {

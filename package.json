@@ -41,7 +41,6 @@
     "dependencies": {
         "laravel-echo": "^1.15.3",
         "nan": "^2.18.0",
-        "nfc-pcsc": "^0.8.1",
         "node-fetch": "^3.3.2",
         "pcsclite": "^1.0.1",
         "pusher": "^5.2.0",
