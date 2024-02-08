@@ -19,7 +19,8 @@ init:
   - git config --global core.autocrlf input
 
 install:
-  - python.exe -m pip install --upgrade setuptools
+  - python.exe -m pip install --upgrade distutils
+  # - pip install distutils
   - ps: Install-Product node 21 x64
   - SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
   # Vérifier l'installation de Python
