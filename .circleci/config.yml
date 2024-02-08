@@ -47,7 +47,7 @@ parameters:
 jobs:
   generate-config:
     docker:
-      - image: cimg/node:21
+      - image: cimg/node:16.14
     steps:
       - checkout
       - path-filtering/set-parameters:
