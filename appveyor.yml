@@ -20,6 +20,7 @@ build_script:
   - yarn run realese
 
 artifacts:
-  - path: 'dist\sonoya.zip'
+  - path: dist
+    name: MyApp
 
 test: false
