@@ -1,81 +1,27 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
-
-defaults: &defaults
-  macos:
-    xcode: "15.1.0"
-  working_directory: ~/repo
-
 version: 2
 jobs:
-  build_and_test:
-    <<: *defaults
+  build_windows:
+    docker:
+      - image: electronuserland/builder:wine
     steps:
       - checkout
-      - restore_cache:
-          name: Restore node modules
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run:
-          name: Install dependencies
-          command: yarn install
-      - save_cache:
-          name: Save node modules
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run:
-          name: Build Apps
-          command: yarn build
+      - run: yarn && yarn release --win
 
-  releaseVersion:
-    <<: *defaults
+  build_macos:
+    macos:
+      xcode: "15.0.0"
     steps:
       - checkout
-      - restore_cache:
-          name: Restore node modules
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run:
-          name: Install dependencies
-          command: yarn install
-      - save_cache:
-          name: Save node modules
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run:
-          name: Install Wine & RPM
-          command: brew install wine && brew install rpm
-      - run:
-          name: Decode Certificates
-          command: base64 -D -o Certificates.p12 <<< $ReactotronCerts
-      - run:
-          name: Install Gems
-          command: bundle install
-      - run:
-          name: Install Cert
-          command: bundle exec fastlane setup
-      - run:
-          name: Run Release
-          command: yarn ci:publish
+      - run: security create-keychain -p $KEYCHAIN_PASSWORD build.keychain
+      - run: security default-keychain -s build.keychain
+      - run: security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain
+      - run: echo $KEYSTORE | base64 --decode - > keystore.p12
+      - run: security import keystore.p12 -k build.keychain -P $KEYCHAIN_PASSWORD -T /usr/bin/codesign
+      - run: yarn && yarn release --mac
 
 workflows:
   version: 2
-  test_and_release:
+  build:
     jobs:
-      - build_and_test:
-          filters:
-            branches:
-                ignore: master
-      - releaseVersion:
-          context: ReactotronCerts
-          filters:
-            branches:
-                only: master
+      - build_windows
+      - build_macos
