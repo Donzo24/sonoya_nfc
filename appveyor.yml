@@ -17,7 +17,7 @@ init:
 
 install:
   - ps: Install-Product node 21 x64
-  - ps: Install-Package python -Force
+  - ps: Install-Package Python 2.6.6 x64
   - yarn
 
 build_script:
