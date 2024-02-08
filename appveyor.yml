@@ -14,7 +14,7 @@ install:
   - ps: Install-Product node 21 x64
   - yarn
 
-build_script:
-  - yarn release
+# build_script:
+#   - yarn release
 
 test: false
