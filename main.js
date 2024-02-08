@@ -6,6 +6,8 @@ import PusherJs from "pusher-js";
 import { app, BrowserWindow } from "electron";
 import path from "path";
 import os from "os";
+import Store from "electron-store";
+import createBackgroundService from "./register-startup.js";
 
 var LED_ROUGE = [0xFF, 0x00, 0x40, 0x50, 0x04, 0x02, 0x0A, 0x02, 0x00];
 var BEEP_LONG = [0xFF, 0x00, 0x40, 0x00, 0x4C, 0x6, 0x00, 0x01, 0x01];
@@ -14,6 +16,8 @@ var READ_UID = [0xFF, 0xCA, 0x00, 0x00, 0x00];
 var CURRENT_STATUS = false;
 
 var pcscs = pcsc();
+
+const store = new Store();
 
 const userDataPath = app.getPath('userData');
 const dbName = 'sonoya_db.db';
@@ -89,6 +93,11 @@ pcscs.on('error', function(err) {
 const dbPath = path.join(userDataPath, dbName);
 
 app.on('ready', () => {
+
+    if (!store.has('firstRun')) {
+        createBackgroundService();
+        store.set('firstRun', true);
+    }
 
 	createDbSchema();
 

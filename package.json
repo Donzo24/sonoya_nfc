@@ -20,6 +20,10 @@
                 "deb"
             ]
         },
+        "mac": {
+            "category": "ERP",
+            "icon": "assets/logo.png"
+        },
         "win": {
             "target": "nsis",
             "icon": "assets/logo.png"
@@ -38,6 +42,7 @@
     },
     "dependencies": {
         "better-sqlite3": "^9.4.0",
+        "electron-store": "^8.1.0",
         "laravel-echo": "^1.15.3",
         "libxmljs": "^1.0.11",
         "nan": "^2.18.0",
