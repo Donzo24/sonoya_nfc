@@ -1,79 +1,81 @@
-version: 2.1
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
 
-# Required for dynamic configuration
-setup: true
+defaults: &defaults
+  macos:
+    xcode: "15.1.0"
+  working_directory: ~/repo
 
-# Orbs
-orbs:
-  path-filtering: circleci/path-filtering@0.1.0
-  continuation: circleci/continuation@0.2.0
-
-# All input parameters to pass to build config
-parameters:
-  run-docs-only:
-    type: boolean
-    default: false
-
-  upload-to-storage:
-    type: string
-    default: '1'
-
-  run-build-linux:
-    type: boolean
-    default: false
-
-  run-build-mac:
-    type: boolean
-    default: false
-
-  run-linux-publish:
-    type: boolean
-    default: false
-
-  linux-publish-arch-limit:
-    type: enum
-    default: all
-    enum: ["all", "arm", "arm64", "x64", "ia32"]
-
-  run-macos-publish:
-    type: boolean
-    default: false
-
-  macos-publish-arch-limit:
-    type: enum
-    default: all
-    enum: ["all", "osx-x64", "osx-arm64", "mas-x64", "mas-arm64"]
-
+version: 2
 jobs:
-  generate-config:
-    docker:
-      - image: cimg/node:16.14
+  build_and_test:
+    <<: *defaults
     steps:
       - checkout
-      - path-filtering/set-parameters:
-          base-revision: main
-          mapping: |
-            ^((?!docs/).)*$ run-build-mac true
-            ^((?!docs/).)*$ run-build-linux true
-            docs/.* run-docs-only true
-            ^((?!docs/).)*$ run-docs-only false
+      - restore_cache:
+          name: Restore node modules
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
       - run:
-          command: |
-            cd .circleci/config
-            yarn
-            export CIRCLECI_BINARY="$HOME/circleci"
-            curl -fLSs https://raw.githubusercontent.com/CircleCI-Public/circleci-cli/main/install.sh | DESTDIR=$CIRCLECI_BINARY bash
-            node build.js
-          name: Pack config.yml
+          name: Install dependencies
+          command: yarn install
+      - save_cache:
+          name: Save node modules
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
       - run:
-          name: Set params
-          command: node .circleci/config/params.js
-      - continuation/continue:
-          configuration_path: .circleci/config-staging/built.yml
-          parameters: /tmp/pipeline-parameters.json
+          name: Build Apps
+          command: yarn build
 
-# Initial setup workflow
+  releaseVersion:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore node modules
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - save_cache:
+          name: Save node modules
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Install Wine & RPM
+          command: brew install wine && brew install rpm
+      - run:
+          name: Decode Certificates
+          command: base64 -D -o Certificates.p12 <<< $ReactotronCerts
+      - run:
+          name: Install Gems
+          command: bundle install
+      - run:
+          name: Install Cert
+          command: bundle exec fastlane setup
+      - run:
+          name: Run Release
+          command: yarn ci:publish
+
 workflows:
-  setup:
+  version: 2
+  test_and_release:
     jobs:
-      - generate-config
+      - build_and_test:
+          filters:
+            branches:
+                ignore: master
+      - releaseVersion:
+          context: ReactotronCerts
+          filters:
+            branches:
+                only: master
