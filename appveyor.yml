@@ -16,4 +16,5 @@ install:
   - .\node_modules\.bin\electron-rebuild.cmd
 
 build_script:
-  - npm run dist
+  - npm install
+  - .\node_modules\.bin\electron-rebuild.cmd
