@@ -5,9 +5,10 @@ jobs:
       - image: electronuserland/builder:wine
     steps:
       - checkout
-      - run: yarn && yarn release --win
       - run: npm install && .\node_modules\.bin\electron-rebuild.cmd
       - run: ./node_modules/.bin/electron-rebuild
+      - run: yarn && yarn release --win
+      
 
 workflows:
   version: 2
