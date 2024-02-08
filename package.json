@@ -2,7 +2,7 @@
     "name": "sonoya",
     "version": "1.0.0",
     "description": "Sonoya NFC Reader",
-    "main": "main.js",
+    "main": "test.js",
     "type": "module",
     "scripts": {
         "start": "electron .",
@@ -43,7 +43,7 @@
         "node-gyp": "^10.0.1",
         "pcsclite": "^1.0.1",
         "pusher": "^5.2.0",
-        "pusher-js": "^8.4.0-rc2",
-        "sqlite3": "^5.1.7"
+        "pusher-js": "^8.4.0-rc2"
+        
     }
 }
