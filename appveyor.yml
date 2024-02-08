@@ -20,6 +20,6 @@ build_script:
   - yarn run realese
 
 artifacts:
-  - path: 'C:\projects\sonoya-nfc\sonoya.zip'
+  - path: 'dist\sonoya.zip'
 
 test: false
