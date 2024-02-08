@@ -1,16 +1,7 @@
 image: Visual Studio 2019
 
 environment:
-  matrix:
-  # - TOXENV: py27  # end-of-life-branches
-  # - TOXENV: py37
-  - TOXENV: py38    # https://devguide.python.org/versions
-  - TOXENV: py39
-  - TOXENV: py310
-  - TOXENV: py311
-  - TOXENV: py266
-  - PY_PYTHON: 2.6.6  # Run a Tox job to run the ruff linter on Python 3.12
-    TOXENV: ruff
+  PYTHON: "C:\Python26-x6"
     
 platform:
   - x64
@@ -26,6 +17,7 @@ init:
 
 install:
   - ps: Install-Product node 21 x64
+  - ps: Install-Package python -Force
   - yarn
 
 build_script:
