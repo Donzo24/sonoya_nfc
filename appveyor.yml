@@ -23,8 +23,6 @@ install:
   - SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
   # Vérifier l'installation de Python
   - python --version
-  - python -m pip install -U pip
-  - pip install tox
   - yarn
 
 build_script:
