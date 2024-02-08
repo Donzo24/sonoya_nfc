@@ -14,3 +14,4 @@ git remote set-url origin https://Donzo24:ghp_T6VeaGKBNHFdor5H5fog7zXvNxr9ph1Ywe
 #              "category": "ERP",
 #          "icon": "assets/logo.png"
 #   }
+        "node-gyp": "^10.0.1",
