@@ -19,7 +19,7 @@ init:
   - git config --global core.autocrlf input
 
 install:
-  - python.exe -m pip install --upgrade distutils
+  # - python.exe -m pip install --upgrade distutils
   # - pip install distutils
   - ps: Install-Product node 21 x64
   - SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
