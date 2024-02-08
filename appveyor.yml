@@ -1,9 +1,10 @@
 image: Visual Studio 2019
 
 environment:
-  matrix:
-    - PYTHON: "C:\\Python26-x64"
-  PYTHON: "C:\\Python26-x64"
+  matrix: 
+    - TOXENV: py26
+      PYTHON: C:\Python26-x64
+
     
 platform:
   - x64
@@ -19,9 +20,11 @@ init:
 
 install:
   - ps: Install-Product node 21 x64
-  - "%PYTHON%\\python.exe -m pip install wheel"
+  - SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
   # Vérifier l'installation de Python
   - python --version
+  - python -m pip install -U pip
+  - pip install tox
   - yarn
 
 build_script:
