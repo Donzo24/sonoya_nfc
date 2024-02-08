@@ -2,6 +2,10 @@ npx electron-builder --mac
 npx electron-builder --win
 npx electron-builder --linux
 
+# "mac": {
+#              "category": "ERP",
+#          "icon": "assets/logo.png"
+#   }
 ./node_modules/.bin/electron-rebuild
 .\node_modules\.bin\electron-rebuild.cmd
 

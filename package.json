@@ -18,10 +18,6 @@
                 "deb"
             ]
         },
-        "mac": {
-            "category": "ERP",
-            "icon": "assets/logo.png"
-        },
         "win": {
             "target": "nsis",
             "icon": "assets/logo.png"
