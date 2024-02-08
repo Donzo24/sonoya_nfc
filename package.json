@@ -2,7 +2,7 @@
     "name": "sonoya",
     "version": "1.0.0",
     "description": "Sonoya NFC Reader",
-    "main": "test.js",
+    "main": "main.js",
     "type": "module",
     "scripts": {
         "start": "electron .",
