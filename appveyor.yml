@@ -19,6 +19,7 @@ init:
 
 install:
   - ps: Install-Product node 21 x64
+  - "%PYTHON%\\python.exe -m pip install wheel"
   # Vérifier l'installation de Python
   - python --version
   - yarn
