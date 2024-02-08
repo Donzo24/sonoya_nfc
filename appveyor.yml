@@ -15,6 +15,6 @@ install:
   - yarn
 
 build_script:
-  - npx electron-builder --win
+  - yarn release
 
 test: false
