@@ -14,6 +14,7 @@
     },
     "build": {
         "appId": "app.sonoya.gym.app",
+        "productName": "Sonoya NFC Reader",
         "linux": {
             "target": [
                 "deb"

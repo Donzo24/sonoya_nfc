@@ -116,6 +116,9 @@ function createDbSchema() {
         date_fin TEXT
     )`);
 
+    // db.prepare('UPDATE souscription SET date_debut = ?, date_fin = ? WHERE serial_number = ?').run();
+    //db.prepare('DELETE FROM souscription').run();
+
     db.close();
 
     console.log('Base de données SQLite fermée avec succès.');
@@ -201,3 +204,8 @@ function disConnetReader(reader) {
         }
     });
 }
+
+app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+    event.preventDefault();
+    callback(true);
+});
