@@ -1,7 +1,7 @@
 image: Visual Studio 2019
 
 environment:
-  PYTHON_VERSION: "2.6.6"
+  PYTHON: "C:\\Python26-x64"
     
 platform:
   - x64
@@ -17,13 +17,6 @@ init:
 
 install:
   - ps: Install-Product node 21 x64
-  - ps: |
-      $url = "https://www.python.org/ftp/python/2.6.6/python-2.6.6.amd64.msi"
-      $pythonInstaller = "$env:TEMP\python-2.6.6.amd64.msi"
-      Invoke-WebRequest -Uri $url -OutFile $pythonInstaller
-      Start-Process -Wait -FilePath $pythonInstaller -ArgumentList "/quiet", "InstallAllUsers=1", "PrependPath=1"
-  # Redémarrer la session PowerShell pour que les modifications de l'environnement soient prises en compte
-  - ps: Start-Process -FilePath powershell -ArgumentList '-NoProfile', '-Command', '& { Restart-Computer -Force }' -Verb RunAs
   # Vérifier l'installation de Python
   - python --version
   - yarn
