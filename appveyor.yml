@@ -1,11 +1,17 @@
-image: Visual Studio 2019
+image: Visual Studio 2017
 
-environment:
-  matrix:
-    - nodejs_version: 21
+platform:
+  - x64
+
+cache:
+  - node_modules
+  - '%USERPROFILE%\.electron'
+
+init:
+  - git config --global core.autocrlf input
 
 install:
-  - ps: Install-Product node $env:nodejs_version
+  - ps: Install-Product node 21 x64
   - npm install
   - .\node_modules\.bin\electron-rebuild.cmd
 
