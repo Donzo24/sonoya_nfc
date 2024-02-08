@@ -20,6 +20,6 @@ build_script:
   - yarn run realese
 
 artifacts:
-  - path: build\rhubarb-lip-sync-*.zip
+  - path: '%USERPROFILE%\build\sonoya.zip'
 
 test: false
