@@ -1,6 +1,8 @@
 image: Visual Studio 2019
 
 environment:
+  matrix:
+    - PYTHON: "C:\\Python26-x64"
   PYTHON: "C:\\Python26-x64"
     
 platform:
