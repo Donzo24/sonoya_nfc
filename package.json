@@ -36,6 +36,7 @@
         "electron-reloader": "^1.2.3"
     },
     "dependencies": {
+        "better-sqlite3": "^9.4.0",
         "laravel-echo": "^1.15.3",
         "libxmljs": "^1.0.11",
         "nan": "^2.18.0",
@@ -43,7 +44,6 @@
         "node-gyp": "^10.0.1",
         "pcsclite": "^1.0.1",
         "pusher": "^5.2.0",
-        "pusher-js": "^8.4.0-rc2",
-        "sqlite3": "^5.1.7"
+        "pusher-js": "^8.4.0-rc2"
     }
 }
