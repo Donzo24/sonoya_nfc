@@ -2,13 +2,15 @@ npx electron-builder --mac
 npx electron-builder --win
 npx electron-builder --linux
 
-# "mac": {
-#              "category": "ERP",
-#          "icon": "assets/logo.png"
-#   }
 ./node_modules/.bin/electron-rebuild
 .\node_modules\.bin\electron-rebuild.cmd
 
 git clone https://Donzo24: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@github.com/Donzo24/sonoya_nfc.git .
 
 git remote set-url origin https://Donzo24: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@github.com/Donzo24/sonoya_nfc.git
+
+
+# "mac": {
+#              "category": "ERP",
+#          "icon": "assets/logo.png"
+#   }
