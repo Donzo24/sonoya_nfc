@@ -3,6 +3,7 @@ npx electron-builder --win
 npx electron-builder --linux
 
 ./node_modules/.bin/electron-rebuild
+.\node_modules\.bin\electron-rebuild.cmd
 
 git clone https://Donzo24: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@github.com/Donzo24/sonoya_nfc.git .
 
