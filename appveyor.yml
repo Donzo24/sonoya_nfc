@@ -33,6 +33,6 @@ build_script:
 
 artifacts:
   - path: dist
-    name: MyApp
+    name: SonoyaNFC
 
 test: false

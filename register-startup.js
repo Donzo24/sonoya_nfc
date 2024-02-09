@@ -27,14 +27,14 @@ export default function createBackgroundService() {
 		
 	} else if (os.platform() === 'win32') {
 		// Configuration spécifique pour Windows
-		const registryKeyPath = '\\Software\\Microsoft\\Windows\\CurrentVersion\\Run';
-		const appPath = path.resolve(os.homedir(), 'Sonoya NFC Reader.exe');
+		// const registryKeyPath = '\\Software\\Microsoft\\Windows\\CurrentVersion\\Run';
+		// const appPath = path.resolve(os.homedir(), 'Sonoya NFC Reader.exe');
 	
-		const regeditContent = `[HKEY_CURRENT_USER${registryKeyPath}]"${appName}"="${appPath}"`;
+		// const regeditContent = `[HKEY_CURRENT_USER${registryKeyPath}]"${appName}"="${appPath}"`;
 	
-		const regeditPath = path.resolve(os.homedir(), 'register-startup.reg');
+		// const regeditPath = path.resolve(os.homedir(), 'register-startup.reg');
 	
-		fs.writeFileSync(regeditPath, regeditContent, 'utf-8');
+		// fs.writeFileSync(regeditPath, regeditContent, 'utf-8');
 		//console.log(`Le fichier de lancement automatique a été créé : ${regeditPath}`);
 	}
 }

@@ -20,75 +20,85 @@ var pcscs = pcsc();
 const store = new Store();
 
 const userDataPath = app.getPath('userData');
+
 const dbName = 'sonoya_db.db';
 
-pcscs.on('reader', function(reader) {
+try {
+    
+    pcscs.on('reader', function(reader) {
 
-    reader.on('status', function(status) {
+        console.log('New reader detected', reader.name);
 
-        const cardInserted = status.state & reader.SCARD_STATE_PRESENT;
-
-        if (cardInserted) {
-            
-            reader.connect({ share_mode: reader.SCARD_SHARE_EXCLUSIVE }, (err, protocol) => {
-                if (err) {
-                    console.error('Erreur lors de la connexion au lecteur NFC:', err.message);
-                    CURRENT_STATUS = false;
-                    return;
-                }
-
-                if(protocol == undefined) protocol = 2;
-
-                console.log("STATUS: "+CURRENT_STATUS);
-
-                if(CURRENT_STATUS == true) return;
-                console.log("SONA CAMARA");
-
-                CURRENT_STATUS = true;
-
-                reader.transmit(Buffer.from(READ_UID), 40, protocol, async (err, data) => {
+        reader.on('status', function(status) {
+    
+            const cardInserted = status.state & reader.SCARD_STATE_PRESENT;
+    
+            if (cardInserted) {
+                
+                reader.connect({ share_mode: reader.SCARD_SHARE_EXCLUSIVE }, async (err, protocol) => {
                     if (err) {
-                        console.error('Erreur lors de la lecture de l\'UID:', err.message);
-                        disConnetReader(reader);
+                        console.error('Erreur lors de la connexion au lecteur NFC:', err.message);
                         CURRENT_STATUS = false;
-                    } else {
-                        // L'UID est généralement les premiers 4 à 7 octets de la réponse
-                        const uid = data.slice(0, -2).toString('hex');
-                        await makePostRequest(uid, reader, async (status) => {
-
-                            if (status == false) {
-                                reader.transmit(Buffer.from(BEEP_LONG), 40, protocol, (err, data) => {
-                                    reader.transmit(Buffer.from(LED_ROUGE), 40, protocol, (err, data) => {
-                                        disConnetReader(reader);
-                                    });
-                                });
-                            } else {
-                                disConnetReader(reader);
-                            }
-
-                            await sleep(50);
-
-                            CURRENT_STATUS = false;
-
-                        });
+                        return;
                     }
+    
+                    if(protocol == undefined) protocol = 2;
+    
+                    console.log("STATUS: "+CURRENT_STATUS);
+    
+                    if(CURRENT_STATUS == true) return;
+    
+                    CURRENT_STATUS = true;
+    
+                    reader.transmit(Buffer.from(READ_UID), 40, protocol, async (err, data) => {
+                        if (err) {
+                            console.error('Erreur lors de la lecture de l\'UID:', err.message);
+                            disConnetReader(reader);
+                            CURRENT_STATUS = false;
+                        } else {
+                            // L'UID est généralement les premiers 4 à 7 octets de la réponse
+                            const uid = data.slice(0, -2).toString('hex');
+                            await makePostRequest(uid, reader, async (status) => {
+    
+                                if (status == false) {
+                                    reader.transmit(Buffer.from(BEEP_LONG), 40, protocol, (err, data) => {
+                                        reader.transmit(Buffer.from(LED_ROUGE), 40, protocol, (err, data) => {
+                                            disConnetReader(reader);
+                                        });
+                                    });
+                                } else {
+                                    disConnetReader(reader);
+                                }
+    
+                                await sleep(5);
+    
+                                CURRENT_STATUS = false;
+    
+                            });
+                        }
+                    });
                 });
-            });
-        }
+            }
+        });
+    
+        reader.on('end', function() {
+            console.log('Reader',  this.name, 'removed');
+        });
+        
     });
 
-    reader.on('end', function() {
-        console.log('Reader',  this.name, 'removed');
+    pcscs.on('error', function(err) {
+        console.log('PCSC error', err.message);
     });
-});
+} catch (error) {
+    console.log(error);
+}
 
 function sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
-pcscs.on('error', function(err) {
-    console.log('PCSC error', err.message);
-});
+
 
 const dbPath = path.join(userDataPath, dbName);
 
