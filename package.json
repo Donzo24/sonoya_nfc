@@ -32,15 +32,7 @@
             "sign": true
         },
         "win": {
-            "target": [
-                {
-                  "target": "nsis",
-                  "arch": [
-                    "x64",
-                    "ia32"
-                  ]
-                }
-            ],
+            "target": "nsis",
             "publisherName": "Sonoya Technologies",
             "certificateFile": "assets/certificate.pfx",
             "certificatePassword": "Donzo1992",
@@ -59,7 +51,6 @@
         "electron-reloader": "^1.2.3"
     },
     "dependencies": {
-        "@electron/osx-sign": "^1.0.5",
         "better-sqlite3": "^9.4.0",
         "electron-store": "^8.1.0",
         "laravel-echo": "^1.15.3",
