@@ -4,38 +4,33 @@ import path from "path";
 
 const appName = 'Sonoya NFC Reader';
 
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const plistFilePath = path.join(__dirname, 'assets', 'Info.plist');
+
 export default function createBackgroundService() {
 	if (os.platform() === 'darwin') {
-		// Configuration spécifique pour macOS
-		const plistContent = `
-		<?xml version="1.0" encoding="UTF-8"?>
-		<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-		<plist version="1.0">
-		<dict>
-			<key>Label</key>
-			<string>${appName}</string>
-			<key>ProgramArguments</key>
-			<array>
-			<string>${path.resolve(os.homedir(), 'Applications', `${appName}.app`, 'Contents', 'MacOS', appName)}</string>
-			</array>
-			<key>RunAtLoad</key>
-			<true/>
-		</dict>
-		</plist>
-		`;
-	
-		const plistPath = path.resolve(os.homedir(), 'Library', 'LaunchAgents', `${appName}.plist`);
-		fs.writeFileSync(plistPath, plistContent, 'utf-8');
-		console.log(`Le fichier de lancement automatique a été créé : ${plistPath}`);
+
+		var appPath = path.resolve(os.homedir(), 'Applications', `${appName}.app`, 'Contents', 'MacOS', appName);
+		
+		fs.readFile(plistFilePath, 'utf8', (err, data) => {
+			if (err) return;
+		  
+				// Remplacer __APP_PATH__ par Sonoya
+				var plistContent = data.replace(/__APP_PATH__/g, appPath);
+				plistContent = plistContent.replace(/__APP_NAME__/g, appName);
+
+				const plistPath = path.resolve(os.homedir(), 'Library', 'LaunchAgents', `${appName}.plist`);
+				fs.writeFileSync(plistPath, plistContent, 'utf-8');
+
+				console.log(`Le fichier de lancement automatique a été créé : ${plistPath}`);
+		  });
+		
 	} else if (os.platform() === 'win32') {
 		// Configuration spécifique pour Windows
 		const registryKeyPath = '\\Software\\Microsoft\\Windows\\CurrentVersion\\Run';
 		const appPath = path.resolve(os.homedir(), 'Sonoya NFC Reader.exe');
 	
-		const regeditContent = `
-		[HKEY_CURRENT_USER${registryKeyPath}]
-		"${appName}"="${appPath}"
-		`;
+		const regeditContent = `[HKEY_CURRENT_USER${registryKeyPath}]"${appName}"="${appPath}"`;
 	
 		const regeditPath = path.resolve(os.homedir(), 'register-startup.reg');
 	

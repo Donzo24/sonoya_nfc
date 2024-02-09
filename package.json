@@ -21,11 +21,29 @@
             ]
         },
         "mac": {
-            "category": "ERP",
-            "icon": "assets/logo.png"
+            "category": "public.app-category.utilities",
+            "icon": "assets/logo.png",
+            "gatekeeperAssess": false,
+            "hardenedRuntime": true,
+            "entitlements": "assets/entitlements.mac.plist",
+            "entitlementsInherit": "assets/entitlements.mac.plist"
+        },
+        "dmg": {
+            "sign": true
         },
         "win": {
-            "target": "nsis",
+            "target": [
+                {
+                  "target": "nsis",
+                  "arch": [
+                    "x64",
+                    "ia32"
+                  ]
+                }
+            ],
+            "publisherName": "Sonoya Technologies",
+            "certificateFile": "chemin/vers/votre/certificat.pfx",
+            "certificatePassword": "mot de passe du certificat",
             "icon": "assets/logo.png"
         }
     },
@@ -41,6 +59,7 @@
         "electron-reloader": "^1.2.3"
     },
     "dependencies": {
+        "@electron/osx-sign": "^1.0.5",
         "better-sqlite3": "^9.4.0",
         "electron-store": "^8.1.0",
         "laravel-echo": "^1.15.3",
