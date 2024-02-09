@@ -95,8 +95,6 @@ function sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
-
-
 const dbPath = path.join(userDataPath, dbName);
 
 app.on('ready', () => {
