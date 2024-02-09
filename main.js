@@ -23,6 +23,26 @@ const userDataPath = app.getPath('userData');
 
 const dbName = 'sonoya_db.db';
 
+function sendCommande(reader, protocol) {
+
+    reader.transmit(Buffer.from(READ_UID), 100, protocol, async (err, data) => {
+        if (err) {
+            console.error('Erreur lors de la lecture de l\'UID:', err.message);
+        } else {
+            // L'UID est généralement les premiers 4 à 7 octets de la réponse
+            const uid = data.slice(0, -2).toString('hex');
+            await makePostRequest(uid, reader, async (status) => {
+
+                if (status == false) {
+                    reader.transmit(Buffer.from(BEEP_LONG), 40, protocol, (err, data) => {
+                        reader.transmit(Buffer.from(LED_ROUGE), 40, protocol, (err, data) => {});
+                    });
+                } 
+            });
+        }
+    });
+}
+
 try {
     
     pcscs.on('reader', function(reader) {
@@ -32,52 +52,29 @@ try {
         reader.on('status', function(status) {
     
             const cardInserted = status.state & reader.SCARD_STATE_PRESENT;
+
+            var changes = this.state ^ status.state;
+
+            if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
+                reader.disconnect(reader.SCARD_LEAVE_CARD, function(err) {
+                    if (err) console.log(err);
+                });
+
+                return;
+            }
     
             if (cardInserted) {
-                
-                reader.connect({ share_mode: reader.SCARD_SHARE_EXCLUSIVE }, async (err, protocol) => {
-                    if (err) {
-                        console.error('Erreur lors de la connexion au lecteur NFC:', err.message);
-                        CURRENT_STATUS = false;
-                        return;
-                    }
-    
-                    if(protocol == undefined) protocol = 2;
-    
-                    console.log("STATUS: "+CURRENT_STATUS);
-    
-                    if(CURRENT_STATUS == true) return;
-    
-                    CURRENT_STATUS = true;
-    
-                    reader.transmit(Buffer.from(READ_UID), 40, protocol, async (err, data) => {
-                        if (err) {
-                            console.error('Erreur lors de la lecture de l\'UID:', err.message);
-                            disConnetReader(reader);
-                            CURRENT_STATUS = false;
-                        } else {
-                            // L'UID est généralement les premiers 4 à 7 octets de la réponse
-                            const uid = data.slice(0, -2).toString('hex');
-                            await makePostRequest(uid, reader, async (status) => {
-    
-                                if (status == false) {
-                                    reader.transmit(Buffer.from(BEEP_LONG), 40, protocol, (err, data) => {
-                                        reader.transmit(Buffer.from(LED_ROUGE), 40, protocol, (err, data) => {
-                                            disConnetReader(reader);
-                                        });
-                                    });
-                                } else {
-                                    disConnetReader(reader);
-                                }
-    
-                                await sleep(5);
-    
-                                CURRENT_STATUS = false;
-    
-                            });
-                        }
+
+                if(reader.connected) {
+                    //Le lecteur es connecter, envoyer la commande
+                    sendCommande(reader, 2);
+                } else {
+                    //Etablir la connexion avec le lecteur puis envoyer la commande
+                    reader.connect({share_mode: reader.SCARD_SHARE_SHARED}, async (err, protocol) => {
+                        if(protocol == undefined) protocol = 2;
+                        sendCommande(reader, protocol);
                     });
-                });
+                }
             }
         });
     

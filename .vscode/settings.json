@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.twig": "twig",
+        "stdio.h": "c",
+        "stdlib.h": "c"
+    }
+}
