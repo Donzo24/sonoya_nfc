@@ -42,8 +42,8 @@
                 }
             ],
             "publisherName": "Sonoya Technologies",
-            "certificateFile": "assets/generatedDigital.pfx",
-            "certificatePassword": "E_G$HDf38aaTzDD",
+            "certificateFile": "assets/certificate.pfx",
+            "certificatePassword": "Donzo1992",
             "icon": "assets/logo.png"
         }
     },
