@@ -7,13 +7,14 @@ import { app, BrowserWindow } from "electron";
 import path from "path";
 import os from "os";
 import Store from "electron-store";
+import axios from "axios";
 import createBackgroundService from "./register-startup.js";
 
 var LED_ROUGE = [0xFF, 0x00, 0x40, 0x50, 0x04, 0x02, 0x0A, 0x02, 0x00];
 var BEEP_LONG = [0xFF, 0x00, 0x40, 0x00, 0x4C, 0x6, 0x00, 0x01, 0x01];
 var READ_UID = [0xFF, 0xCA, 0x00, 0x00, 0x00];
 
-var CURRENT_STATUS = false;
+var API_URL = "https://www.sonfonia-fitness.com/api/v1";
 
 var pcscs = pcsc();
 
@@ -97,11 +98,39 @@ function sleep(milliseconds) {
 
 const dbPath = path.join(userDataPath, dbName);
 
+async function updateLocalDB() {
+    try {
+        var endPoint = API_URL+"/e9306ce7-4a38-49ec-af98-df2a1dcf53af";
+
+        const response = await axios.get(endPoint);
+        const list = response.data; // Supposons que votre API renvoie une liste au format JSON
+        
+        if (response.status === 200) {
+
+            const list = response.data; // Supposons que votre API renvoie une liste au format JSON
+            
+            // Parcours de la liste
+            list.forEach(data => {
+                //console.log(data); // Vous pouvez faire ce que vous voulez avec chaque élément de la liste
+                insertOrUpdateRecord(data.serial_number, data.date_debut, data.date_fin);
+            });
+
+            store.set('dbUpdate', true);
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération de la liste :', error);
+    }
+}
+
 app.on('ready', () => {
 
     if (!store.has('firstRun')) {
         createBackgroundService();
         store.set('firstRun', true);
+    }
+
+    if(store.has('dbUpdate')) {
+        updateLocalDB();
     }
 
 	createDbSchema();
