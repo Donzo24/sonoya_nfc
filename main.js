@@ -92,10 +92,6 @@ try {
     console.log(error);
 }
 
-function sleep(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-}
-
 const dbPath = path.join(userDataPath, dbName);
 
 async function updateLocalDB() {
@@ -103,15 +99,14 @@ async function updateLocalDB() {
         var endPoint = API_URL+"/e9306ce7-4a38-49ec-af98-df2a1dcf53af";
 
         const response = await axios.get(endPoint);
-        const list = response.data; // Supposons que votre API renvoie une liste au format JSON
         
         if (response.status === 200) {
 
-            const list = response.data; // Supposons que votre API renvoie une liste au format JSON
-            
+            const list = response.data.data; // Supposons que votre API renvoie une liste au format JSON
+                        
             // Parcours de la liste
             list.forEach(data => {
-                //console.log(data); // Vous pouvez faire ce que vous voulez avec chaque élément de la liste
+                console.log(data); // Vous pouvez faire ce que vous voulez avec chaque élément de la liste
                 insertOrUpdateRecord(data.serial_number, data.date_debut, data.date_fin);
             });
 
@@ -129,11 +124,9 @@ app.on('ready', () => {
         store.set('firstRun', true);
     }
 
-    if(store.has('dbUpdate')) {
-        updateLocalDB();
-    }
-
 	createDbSchema();
+
+    if(!store.has('dbUpdate')) updateLocalDB();
 
 	const pusher = new PusherJs('fa09b03ab171c8fbc772', {
 		cluster: 'us2',
