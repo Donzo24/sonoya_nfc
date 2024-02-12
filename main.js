@@ -231,16 +231,6 @@ async function makePostRequest(uuid, reader, callback) {
 	}
 }
 
-function disConnetReader(reader) {
-    reader.disconnect(reader.SCARD_UNPOWER_CARD, err => {
-        if (err) {
-            console.error('Erreur lors de la déconnexion du lecteur NFC:', err.message);
-        } else {
-            console.log('Déconnecté du lecteur NFC');
-        }
-    });
-}
-
 app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
     event.preventDefault();
     callback(true);
