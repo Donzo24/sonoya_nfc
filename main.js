@@ -24,6 +24,8 @@ const userDataPath = app.getPath('userData');
 
 const dbName = 'sonoya_db.db';
 
+var CURRENT_STATUS = false;
+
 function sendCommande(reader, protocol) {
 
     reader.transmit(Buffer.from(READ_UID), 100, protocol, async (err, data) => {
@@ -38,7 +40,8 @@ function sendCommande(reader, protocol) {
                     reader.transmit(Buffer.from(BEEP_LONG), 40, protocol, (err, data) => {
                         reader.transmit(Buffer.from(LED_ROUGE), 40, protocol, (err, data) => {});
                     });
-                } 
+                }
+                CURRENT_STATUS = false;
             });
         }
     });
@@ -63,8 +66,12 @@ try {
 
                 return;
             }
-    
+
+            if(CURRENT_STATUS) return;
+            
             if (cardInserted) {
+
+                CURRENT_STATUS = true;
 
                 if(reader.connected) {
                     //Le lecteur es connecter, envoyer la commande
@@ -76,6 +83,8 @@ try {
                         sendCommande(reader, protocol);
                     });
                 }
+            } else {
+                CURRENT_STATUS = false;
             }
         });
     
@@ -192,7 +201,7 @@ function checkRecordExists(serialNumber, callback) {
 
     if (row) {
         // Un enregistrement valide existe
-        console.log(row);
+        //console.log(row);
         callback(null, true);
     } else {
         // Aucun enregistrement valide trouvé
@@ -219,6 +228,12 @@ async function makePostRequest(uuid, reader, callback) {
 				console.error('Une erreur est survenue lors de la vérification de l\'enregistrement :', err);
 			} else {
                 callback(exists);
+                // console.log(uuid);
+
+                pusher.trigger("nfc-channel-notify", "nfc-event-notify", {
+                    status: exists,
+                    message: exists ? "Abonnement valide":"Aucun abonnement"
+                });
 			}
 		});
 
