@@ -21,6 +21,7 @@ init:
 install:
   # - python.exe -m pip install --upgrade distutils
   # - pip install distutils
+  # - ps: npm install --global windows-build-tools
   - ps: Install-Product node 21 x64
   - SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
   # Vérifier l'installation de Python
