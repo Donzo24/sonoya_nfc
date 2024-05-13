@@ -161,7 +161,7 @@ function createDbSchema() {
         date_fin TEXT
     )`);
 
-    // db.prepare('UPDATE souscription SET date_debut = ?, date_fin = ? WHERE serial_number = ?').run();
+    //db.prepare('UPDATE souscription SET date_debut = ?, date_fin = ? WHERE serial_number = ?').run();
     //db.prepare('DELETE FROM souscription').run();
 
     db.close();
