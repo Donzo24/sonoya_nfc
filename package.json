@@ -52,6 +52,7 @@
         "node-fetch": "^3.3.2",
         "node-gyp": "^10.1.0",
         "pusher": "^5.2.0",
-        "pusher-js": "^8.4.0-rc2"
+        "pusher-js": "^8.4.0-rc2",
+        "pcsclite": "^1.0.1"
     }
 }
