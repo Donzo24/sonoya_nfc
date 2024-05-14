@@ -17,7 +17,7 @@ cache:
 
 init:
   - git config --global core.autocrlf input
-  - yarn global add windows-build-tools
+  # - yarn global add windows-build-tools
 
 install:
   # - python.exe -m pip install --upgrade distutils
