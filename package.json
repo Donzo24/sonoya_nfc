@@ -25,12 +25,8 @@
             "icon": "assets/logo.png",
             "gatekeeperAssess": false,
             "hardenedRuntime": true
-        },
-        "win": {
-            "target": "nsis",
-            "publisherName": "Sonoya Technologies",
-            "icon": "assets/logo.png"
         }
+        
     },
     "author": "Youssouf Donzo <donzoyoussouf@gmail.com>",
     "license": "UNLICENSED",
