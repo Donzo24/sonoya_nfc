@@ -45,6 +45,7 @@
     },
     "dependencies": {
         "axios": "^1.6.7",
+        "better-sqlite3": "^10.0.0",
         "electron-store": "^8.1.0",
         "laravel-echo": "^1.15.3",
         "nan": "^2.18.0",
