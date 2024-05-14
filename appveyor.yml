@@ -26,7 +26,6 @@ install:
   # Vérifier l'installation de Python
   - python --version
   - yarn
-  - --global windows-build-tools
 
 build_script:
   - python --version
