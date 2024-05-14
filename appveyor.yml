@@ -3,7 +3,7 @@ image: Previous Visual Studio 2022
 environment:
   matrix: 
     - TOXENV: py26
-      PYTHON: C:\Python38-x64
+      PYTHON: C:\Python310-x64
 
     
 platform:
