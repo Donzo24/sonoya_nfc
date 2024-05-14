@@ -26,9 +26,6 @@
             "gatekeeperAssess": false,
             "hardenedRuntime": true
         },
-        "dmg": {
-            "sign": true
-        },
         "win": {
             "target": "nsis",
             "publisherName": "Sonoya Technologies",
