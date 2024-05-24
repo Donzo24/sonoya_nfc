@@ -1,14 +1,10 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import path from 'path';
-
-
 import pcsc from "pcsclite";
 import fetch from "node-fetch";
 import Pusher from "pusher";
 import Database from 'better-sqlite3';
 import PusherJs from "pusher-js";
-// import { app, BrowserWindow } from "electron";
-// import path from "path";
+import { app, BrowserWindow } from "electron";
+import path from "path";
 import os from "os";
 import Store from "electron-store";
 import axios from "axios";
@@ -278,41 +274,3 @@ app.on('certificate-error', (event, webContents, url, error, certificate, callba
     event.preventDefault();
     callback(true);
 });
-
-function createWindow () {
-    var __dirname = path.resolve();
-    const win = new BrowserWindow({
-        width: 300,
-        height: 300,
-    })
-
-    win.loadFile('html/index.html')
-}
-
-app.whenReady().then(() => {
-    createWindow()
-
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow()
-        }
-    });
-
-
-});
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
-});
-
-let isOn = false;
-
-ipcMain.on('toggle-status', (event) => {
-    isOn = !isOn;
-    mainWindow.webContents.send('status-changed', isOn);
-});
-
-
-
